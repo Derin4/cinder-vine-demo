@@ -1,0 +1,405 @@
+@import "tailwindcss";
+
+/* ---------- Design tokens ---------- */
+@theme {
+  --color-char: #1a1714;
+  --color-ash: #26201c;
+  --color-cream: #f5efe6;
+  --color-bone: #eadfcb;
+  --color-mustard: #c89b3c;
+  --color-ember: #e2672b;
+  --color-wine: #3b1f2b;
+  --color-smoke: #5c534a;
+}
+
+/* Fonts are set by next/font in layout.js (--font-instrument, --font-hanken).
+   "inline" makes utilities read the variable where it is used. */
+@theme inline {
+  --font-display: var(--font-instrument), "Times New Roman", serif;
+  --font-body: var(--font-hanken), system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-char);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-char);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: var(--color-ember);
+    color: var(--color-cream);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-ember);
+    outline-offset: 3px;
+  }
+}
+
+/* ---------- Texture ---------- */
+.grain {
+  position: relative;
+}
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.12;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---------- Reveal on scroll ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.9s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--d, 0ms);
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Fire ---------- */
+.ember {
+  position: absolute;
+  bottom: -12px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, #ffd089, #e2672b 60%, transparent 70%);
+  box-shadow: 0 0 8px 2px rgba(226, 103, 43, 0.55);
+  opacity: 0;
+  animation: ember-rise var(--dur) linear var(--delay) infinite;
+}
+@keyframes ember-rise {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.95;
+  }
+  60% {
+    opacity: 0.55;
+  }
+  100% {
+    transform: translate(var(--drift), -90vh);
+    opacity: 0;
+  }
+}
+
+.flame {
+  transform-origin: 50% 100%;
+}
+.flame-a {
+  animation: flicker-a 3.2s ease-in-out infinite;
+}
+.flame-b {
+  animation: flicker-b 2.2s ease-in-out infinite;
+}
+.flame-c {
+  animation: flicker-c 1.5s ease-in-out infinite;
+}
+@keyframes flicker-a {
+  0%,
+  100% {
+    transform: scale(1, 1) skewX(0deg);
+  }
+  25% {
+    transform: scale(1.03, 1.07) skewX(-2deg);
+  }
+  55% {
+    transform: scale(0.97, 0.95) skewX(2deg);
+  }
+  80% {
+    transform: scale(1.02, 1.04) skewX(-1deg);
+  }
+}
+@keyframes flicker-b {
+  0%,
+  100% {
+    transform: scale(1, 1) skewX(0deg);
+  }
+  30% {
+    transform: scale(0.96, 1.08) skewX(3deg);
+  }
+  65% {
+    transform: scale(1.03, 0.94) skewX(-3deg);
+  }
+}
+@keyframes flicker-c {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+  40% {
+    transform: scale(0.93, 1.1);
+  }
+  70% {
+    transform: scale(1.05, 0.92);
+  }
+}
+.glow {
+  animation: glow 4s ease-in-out infinite;
+}
+@keyframes glow {
+  0%,
+  100% {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+
+.fire-text {
+  background: linear-gradient(
+    100deg,
+    var(--color-mustard) 0%,
+    var(--color-ember) 35%,
+    #ffd089 50%,
+    var(--color-ember) 65%,
+    var(--color-mustard) 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: fire-shift 7s linear infinite;
+}
+@keyframes fire-shift {
+  to {
+    background-position: -220% 0;
+  }
+}
+
+.pulse-dot {
+  animation: pulse-dot 1.8s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(226, 103, 43, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 0 7px rgba(226, 103, 43, 0);
+  }
+}
+
+/* ---------- Hero ---------- */
+.float-a {
+  animation: float-a 7s ease-in-out infinite;
+}
+.float-b {
+  animation: float-b 6s ease-in-out -2s infinite;
+}
+@keyframes float-a {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+@keyframes float-b {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+}
+.hero-arch-glow {
+  background: radial-gradient(
+    ellipse 70% 55% at 50% 92%,
+    rgba(226, 103, 43, 0.95) 0%,
+    rgba(200, 80, 40, 0.55) 35%,
+    transparent 72%
+  );
+}
+
+/* ---------- Week panels ---------- */
+.wk-panel {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  cursor: pointer;
+  text-align: left;
+  color: var(--color-cream);
+  transition:
+    flex-grow 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+    max-height 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.wk-detail {
+  transition:
+    opacity 0.5s ease,
+    transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.wk-vert {
+  transition: opacity 0.35s ease;
+}
+/* mobile: stacked accordion */
+@media (max-width: 1023px) {
+  .wk-panel {
+    max-height: 5.25rem;
+  }
+  .wk-panel[data-active="true"] {
+    max-height: 26rem;
+  }
+  .wk-detail {
+    opacity: 0;
+  }
+  .wk-panel[data-active="true"] .wk-detail {
+    opacity: 1;
+  }
+}
+/* desktop: side-by-side expanding */
+@media (min-width: 1024px) {
+  .wk-panel {
+    flex: 1 1 0;
+    min-width: 0;
+    height: 33rem;
+  }
+  .wk-panel[data-active="true"] {
+    flex-grow: 3.6;
+  }
+  .wk-detail {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  .wk-panel[data-active="true"] .wk-detail {
+    opacity: 1;
+    transform: none;
+    transition-delay: 0.25s;
+  }
+  .wk-panel[data-active="true"] .wk-vert {
+    opacity: 0;
+  }
+}
+
+/* ---------- Menu preview ---------- */
+.menu-in {
+  animation: menu-in 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.menu-art {
+  opacity: 0;
+  transform: scale(1.06);
+  transition:
+    opacity 0.6s ease,
+    transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.menu-art[data-active="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Gallery ---------- */
+.gal {
+  --gpad: max(1.5rem, calc((100vw - 72rem) / 2 + 1.5rem));
+  padding-inline: var(--gpad);
+  scroll-padding-inline: var(--gpad);
+}
+.gal.is-dragging {
+  scroll-snap-type: none !important;
+  cursor: grabbing;
+}
+.gal-num {
+  animation: menu-in 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* ---------- Quotes ---------- */
+@keyframes qprog {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.q-slide {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.8s ease,
+    transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  pointer-events: none;
+}
+.q-slide[data-active="true"] {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+/* ---------- Accordion ---------- */
+.acc-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.acc-panel[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .ember,
+  .flame-a,
+  .flame-b,
+  .flame-c,
+  .glow,
+  .float-a,
+  .float-b,
+  .fire-text,
+  .pulse-dot,
+  .menu-in,
+  .gal-num {
+    animation: none;
+  }
+  .ember {
+    display: none;
+  }
+  .wk-panel,
+  .wk-detail,
+  .menu-art,
+  .q-slide,
+  .acc-panel {
+    transition: none;
+  }
+}
